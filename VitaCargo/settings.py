@@ -4,17 +4,18 @@ from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY='django-insecure-8q+ve8--ur6g+v0rx+#oy50-+0s8l7po+@+j1ijwfb2@d9!*0+'
 
-EMAIL_BACKEND = config('EMAIL_BACKEND')
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_USE_TLS = config('EMAIL_USE_TLS')
-EMAIL_PORT = config('EMAIL_PORT')
-EMAIL_USE_TLS = config('EMAIL_USE_TLS')
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST='smtp.gmail.com'
+EMAIL_USE_TLS=True
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER='saparbekov113@gmail.com'
+EMAIL_HOST_PASSWORD='ijgu vovu bpdw pato'
 
-EMAIL_IS_ACTIVE = config('EMAIL_IS_ACTIVE')
+EMAIL_IS_ACTIVE=True
+
 
 DEBUG = True
 
@@ -67,11 +68,11 @@ WSGI_APPLICATION = 'VitaCargo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('NAME'),
-        'USER': config('USER'),
-        'PASSWORD': config('PASSWORD'),
-        'HOST': config('HOST'),
-        'PORT': config('PORT')
+        'NAME'='defaultdb',
+        'USER'='avnadmin',
+        'PASSWORD'='AVNS_5roggPtEs_1oIVQaNGb',
+        'HOST'='pg-1750cc06-saparbekov113.f.aivencloud.com',
+        'PORT'='23509'
 
     }
 }
