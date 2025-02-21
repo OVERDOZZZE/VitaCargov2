@@ -1,0 +1,74 @@
+{% extends 'shop/layouts/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'shop/css/order_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="order-list-container">
+  <h2>Ваши заказы</h2>
+  <ul class="order-list">
+    {% for order in page_obj %}
+      <li class="order-item" data-order-id="{{ order.id }}">
+        <div class="order-header">
+          <span class="order-id">Заказ №{{ order.id }}</span>
+          <span class="order-date">{{ order.created_at|date:"d.m.Y H:i" }}</span>
+          <span class="order-status">{{ order.get_status_display }}</span>
+        </div>
+        {% if order.comment %}
+          <div class="order-comment">
+            <em>{{ order.comment }}</em>
+          </div>
+        {% endif %}
+        <div class="order-details">
+          <h4>Товары:</h4>
+          <ul class="order-items">
+            {% for item in order.item.all %}
+              <li>
+                <span class="product-name">{{ item.product.formatted_name }}</span>
+                <span class="product-price">{{ item.product.formatted_price }}</span>
+                <span class="product-quantity">x {{ item.formatted_quantity }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+          <div class="order-total">
+            <strong>Итого:</strong> {{ order.total_order_price }}
+          </div>
+        </div>
+        {% if order.status == 'pending' %}
+          <button class="terminate-order" data-id="{{ order.id }}">
+            <i class="fas fa-times"></i> Отменить заказ
+          </button>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll('.terminate-order').forEach(function(button) {
+      button.addEventListener('click', function() {
+        const orderId = this.getAttribute('data-id');
+        fetch("{% url 'shop:cancel_order' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": "{{ csrf_token }}"
+          },
+          body: new URLSearchParams({ order_id: orderId })
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message);
+          if (data.success) {
+            location.reload();
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Vita Cargo{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'shop/css/base.css' %}">
+  <!-- Подключение Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  {% if user.is_authenticated %}
+    <!-- Обёртка для header и main с градиентным фоном -->
+    <div class="wrapper">
+      <header>
+        <nav class="main-nav">
+          <div class="nav-left">
+            <div class="menu-wrapper">
+              <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+              <div class="menu-container">
+                <ul class="menu-list">
+                  <li><a href="{% url 'shop:product_list' %}">Главная</a></li>
+                  <li><a href="{% url 'shop:order_list' %}">Заказы</a></li>
+                  <li><a href="{% url 'profile:profile' %}">Профиль</a></li>
+                  <li><a href="{% url 'shop:category_list' %}">Категории</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="logo">
+              <a href="{% url 'shop:product_list' %}">VITA <i class="fa-solid fa-carrot"></i></a>
+            </div>
+          </div>
+          <div class="nav-right">
+            <a href="{% url 'shop:cart' %}" class="cart-link">
+              <i class="fa-solid fa-cart-shopping"></i><span id="cart-count">{{ cart_item_count }}</span>
+            </a>
+            <form action="{% url 'profile:logout' %}" method="post" class="logout-form">
+              {% csrf_token %}
+              <button type="submit"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </form>
+          </div>
+        </nav>
+      </header>
+      <main>
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+    <footer>
+      <p>© 2025 Vita Cargo. Все права защищены.</p>
+    </footer>
+  {% else %}
+    <h1>Please Sign In</h1>
+  {% endif %}
+  <script src="{% static 'shop/js/menu.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

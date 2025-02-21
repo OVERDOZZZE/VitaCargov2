@@ -1,0 +1,56 @@
+{% extends 'shop/layouts/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'shop/css/cart.css' %}">
+{% endblock %}
+
+{% block content %}
+<h3>Корзина</h3>
+
+{% if cart_items %}
+<div class="cart-table-wrapper">
+  <table>
+      <thead>
+          <tr>
+              <th>Продукт</th>
+              <th>Цена</th>
+              <th>Количество</th>
+              <th>Итого</th>
+              <th>Действия</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for item in cart_items %}
+          <tr data-product-id="{{ item.product.id }}" data-product-type="{{ item.product.type }}">
+              <td>{{ item.product.formatted_name }}</td>
+              <td>{{ item.product.price }}</td>
+              <td>
+                  <input type="number"
+                         class="quantity-input-cart"
+                         data-product-id="{{ item.product.id }}"
+                         value="{{ item.quantity }}"
+                         min="1"
+                         step="{% if item.product.type == 'unit' %}1{% else %}0.1{% endif %}">
+              </td>
+              <td class="item-total">{{ item.item_total }}</td>
+              <td>
+                  <button class="btn-remove-cart" data-product-id="{{ item.product.id }}">
+                    <i class="fas fa-trash"></i> Удалить
+                  </button>
+              </td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+</div>
+<p>Общая сумма: <span id="cart-total">{{ total }}</span></p>
+<button id="btn-checkout" onclick="window.location.href='{% url 'shop:checkout' %}'">
+  <i class="fas fa-credit-card"></i> Оформить
+</button>
+{% else %}
+<p>Ваша корзина пуста.</p>
+{% endif %}
+
+<script src="{% static 'shop/js/cart.js' %}"></script>
+{% endblock %}

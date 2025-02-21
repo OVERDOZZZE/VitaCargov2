@@ -1,0 +1,82 @@
+{% extends 'shop/layouts/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'shop/css/product_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<h3>Товары</h3>
+
+<form class="search-form" method="get" action="{% url 'shop:product_list' %}">
+    <input type="text" id="search-input" name="q" placeholder="Поиск товара" value="{{ request.GET.q }}">
+    <button id="search-btn"><i class="fas fa-search"></i> Найти</button>
+</form>
+
+<div class="product-list">
+{% for product in page_obj %}
+  <div class="product" data-product-id="{{ product.id }}" data-product-type="{{ product.type }}">
+      <div class="product-image">
+          {% if product.image %}
+              <img src="{{ product.image_url }}" alt="{{ product.formatted_name }}">
+          {% else %}
+              <img src="{% static 'images/default_item.png' %}" alt="{{ product.formatted_name }}">
+          {% endif %}
+          <p class="product-price">{{ product.formatted_price }}</p>
+      </div>
+      
+      <div class="product-info">
+          <p class="product-name">{{ product.formatted_name }}</p>
+          <p class="product-code">Код: {{ product.code }}</p>
+          <p class="product-stock">На складе: {{ product.formatted_stock }}</p>
+      </div>
+
+      
+
+      <div class="cart-controls">
+            <button class="btn-add-initial" data-product-id="{{ product.id }}">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+            <div class="quantity-controls" style="display: none;">
+                <button class="btn-remove" data-product-id="{{ product.id }}">
+                   <i class="fa-solid fa-minus"></i>
+                </button>
+                <input type="number"
+                       class="quantity-input"
+                       data-product-id="{{ product.id }}"
+                       value="1"
+                       min="1"
+                       step="{% if product.type == 'unit' %}1{% else %}0.1{% endif %}">
+                <button class="btn-add-increment" data-product-id="{{ product.id }}">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+      </div>
+
+
+
+  </div>
+{% endfor %}
+</div>
+
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-chevron-left"></i></a>
+    {% endif %}
+
+    <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}"><i class="fa-solid fa-chevron-right"></i></a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+</div>
+
+{{ session_cart|json_script:"session-cart-data" }}
+<script src="{% static 'shop/js/cart.js' %}"></script>
+
+{% block extra_js %}
+  <script src="{% static 'shop/js/product_list.js' %}"></script>
+{% endblock %}
+{% endblock %}
